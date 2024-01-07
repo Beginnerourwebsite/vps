@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File and Text Upload</title>
+</head>
+
+<body>
+    
+    <h1>File and Text Upload Example</h1>
+    <!-- <form id="uploadForm"> -->
+    <label for="fileInput">Select a file:</label>
+    <input type="file" id="fileInput" name="file">
+    <!-- Set the accept attribute to specify allowed file types -->
+
+    <br><br><label for="textInput">Enter name:</label>
+    <input type="text" id="textInput" name="text">
+    <br><br> <label for="textclass">Enter class:</label>
+    <input type="text" id="textclass" name="text">
+
+    <button type="button" onclick="uploadFile()">Upload</button>
+    <!-- </form> -->
+    <div id="showhere"></div>
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const textInput = document.getElementById('textInput');
+            const textclass = document.getElementById('textclass');
+
+            const file = fileInput.files[0];
+            let obj = {
+                name: textInput.value,
+                class: textclass.value
+            }
+            const text = textInput.value;
+
+            // if (file || text.trim() !== '') {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append("text", JSON.stringify(obj))
+
+            fetch('http://localhost:3010/upload', {
+                method: 'POST',
+                body: formData,
+            }).then(response => response.json()
+                .then(data => {
+                    console.log(data);
+                }))
+
+        }
+
+        // show function start
+        function show() {
+            fetch("http://localhost:3010").then(data => {
+                data.json().then(data => {
+                    console.log(data)
+                    data.map(element => {
+
+                        if ((element.types).split("/")[0] == "image") {
+                            let img = document.createElement("img")
+                            img.src = element.files
+                            img.style.width = "100px"
+                            img.style.height = "100px"
+                            document.getElementById("showhere").append(img)
+                        }
+                        // console.log(element)
+                        else if (element.types == "text/html") {
+                            let iframe = document.createElement("iframe")
+                            iframe.src = element.files
+                            iframe.style.width = "100px"
+                            iframe.style.height = "100px"
+                            document.getElementById("showhere").append(iframe)
+                        }
+                    })
+                })
+            })
+        }
+        show()
+        // show function end
+
+
+
+    </script>
+</body>
+
+</html>

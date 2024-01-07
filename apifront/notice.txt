@@ -1,0 +1,8 @@
+firstly u will have to open terminal
+
+and choose project folder then write "npm i"
+
+after that u can start project
+
+
+
